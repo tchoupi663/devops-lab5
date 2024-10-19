@@ -26,7 +26,19 @@ module.exports = {
   },
 
   get: (user, callback) => {
-    return callback(new Error(), null)
+    if (!user.username)
+      return callback(new Error("Wrong user parameters"), null)
+
+    const userObj = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+    }
+
+    db.hgetall(user.username, (err, res) => {
+      if (err) return callback(new Error() , null)
+      else if (res) return callback(null, res)
+      else return callback(new Error(), res)
+    })
   }
 
 }
